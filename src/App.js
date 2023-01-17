@@ -1,25 +1,49 @@
-import logo from './logo.svg';
-import './App.css';
+import { Box } from '@chakra-ui/react'
+import React, { useState } from 'react'
+import FormContainer from './components/FormContainer';
+import CreateNoteModal from './components/Modal/CreateNoteModal';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import NotesContainer from './components/NotesContainer';
+import EditNoteModal from './components/Modal/EditNoteModal';
 
-function App() {
+const App = () => {
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [editModalIsOpen, setEditModalIsOpen] = useState(false);
+  const [currentNoteObj, setCurrentNoteObj] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const toggleModal = () => {
+    setModalIsOpen(!modalIsOpen);
+  }
+
+  const toggleEditModal = () => {
+    setEditModalIsOpen(!editModalIsOpen);
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <Box className='py-5'>
+      <ToastContainer />
+      <Box className='container mx-auto'>
+        <FormContainer searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+        <NotesContainer 
+          toggleModal={toggleModal} 
+          toggleEditModal={toggleEditModal} 
+          setCurrentNoteObj={setCurrentNoteObj}
+          searchQuery={searchQuery}
+        />
+      </Box>
+      <CreateNoteModal
+        modalIsOpen={modalIsOpen}
+        toggleModal={toggleModal}
+      />
+      <EditNoteModal
+        editModalIsOpen={editModalIsOpen}
+        toggleModal={toggleEditModal}
+        currentNoteObj={currentNoteObj}
+      />
+    </Box>
+  )
 }
 
-export default App;
+export default App
