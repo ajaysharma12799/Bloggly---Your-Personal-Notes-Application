@@ -5,20 +5,22 @@ import { AiOutlineClose } from 'react-icons/ai';
 import TextInput from '../common/TextInput';
 import TextArea from '../common/TextArea';
 import { useFormik } from 'formik';
-import { collection, addDoc, Timestamp } from '@firebase/firestore';
-import { db } from '../../config/firebase';
+import { collection, Timestamp, addDoc } from '@firebase/firestore';
+import { auth, db } from '../../config/firebase';
 import { toast } from 'react-toastify';
 
 ReactModal.setAppElement('#react-modal-portal');
 
 const CreateNoteModal = ({ modalIsOpen, toggleModal }) => {
-
+    const user = auth.currentUser;
     const handleAddFunctionality = async (notesObj) => {
         try {
             await addDoc(collection(db, 'notes'), {
                 ...notesObj,
+                userID: user.uid,
                 createdAt: Timestamp.now(),
             });
+
             toggleModal();
             toast.success('Note Created Sucessfully');
             formik.resetForm();

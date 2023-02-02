@@ -1,48 +1,48 @@
-import { Box } from '@chakra-ui/react'
-import React, { useState } from 'react'
-import FormContainer from './components/FormContainer';
-import CreateNoteModal from './components/Modal/CreateNoteModal';
+import React, { useState, useEffect } from 'react'
+import { Route, Routes } from 'react-router-dom';
+import Navbar from './components/common/Navbar';
+import Login from './pages/Login';
+import Register from './pages/Register';
 import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import NotesContainer from './components/NotesContainer';
-import EditNoteModal from './components/Modal/EditNoteModal';
+import HomePage from './pages/HomePage';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from './config/firebase';
+import Dashboard from './pages/Dashboard';
+import PrivateRoute from './components/PrivateRoute/PrivateRoute';
 
 const App = () => {
-  const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [editModalIsOpen, setEditModalIsOpen] = useState(false);
-  const [currentNoteObj, setCurrentNoteObj] = useState(null);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [currentUser, setCurrentUser] = useState(null);
 
-  const toggleModal = () => {
-    setModalIsOpen(!modalIsOpen);
-  }
-
-  const toggleEditModal = () => {
-    setEditModalIsOpen(!editModalIsOpen);
-  }
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+        if(user) {
+            setCurrentUser(user);
+            console.log(user);
+        }
+        else {
+            setCurrentUser(null);
+        }
+    })
+}, [currentUser]);
 
   return (
-    <Box className='py-5'>
+    <React.Fragment>
       <ToastContainer />
-      <Box className='container mx-auto'>
-        <FormContainer searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
-        <NotesContainer 
-          toggleModal={toggleModal} 
-          toggleEditModal={toggleEditModal} 
-          setCurrentNoteObj={setCurrentNoteObj}
-          searchQuery={searchQuery}
+      <Navbar currentUser={currentUser} />
+      <Routes>
+        <Route path='/' element={<HomePage currentUser={currentUser} />} />
+        <Route 
+          path='/dashboard' 
+          element={
+            <PrivateRoute currentUser={currentUser}>
+              <Dashboard currentUser={currentUser} />
+            </PrivateRoute>
+          }
         />
-      </Box>
-      <CreateNoteModal
-        modalIsOpen={modalIsOpen}
-        toggleModal={toggleModal}
-      />
-      <EditNoteModal
-        editModalIsOpen={editModalIsOpen}
-        toggleModal={toggleEditModal}
-        currentNoteObj={currentNoteObj}
-      />
-    </Box>
+        <Route path='/login' element={<Login currentUser={currentUser} />} />
+        <Route path='/register' element={<Register currentUser={currentUser} />} />
+      </Routes>
+    </React.Fragment>
   )
 }
 

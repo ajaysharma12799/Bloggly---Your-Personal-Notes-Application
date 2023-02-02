@@ -1,0 +1,15 @@
+import React from 'react'
+import { Box, Image, Heading } from '@chakra-ui/react';
+
+const HomePage = () => {
+  return (
+    <Box>
+      <Box className='w-[90%] md:w-1/2 container mx-auto my-5'>
+        <Image src='/assets/Notes.svg' />
+        <Heading className='my-5 text-center' size={'lg'}>Project is Completed You Can Test It</Heading>
+      </Box>
+    </Box>
+  )
+}
+
+export default HomePage

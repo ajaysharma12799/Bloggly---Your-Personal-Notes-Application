@@ -8,6 +8,6 @@ npm start => Run react Server
 
 > Tech Stack:- React, Chakra UI, TailwindCSS & Firebase
 
-[Video Link]()
+[Video Link](https://youtu.be/jgCNS1LI0lA)
 
-[Live Link]()
+[Live Link](https://bloggly.netlify.app/)
