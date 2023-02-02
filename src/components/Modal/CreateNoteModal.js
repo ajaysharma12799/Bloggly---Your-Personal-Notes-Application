@@ -5,23 +5,50 @@ import { AiOutlineClose } from 'react-icons/ai';
 import TextInput from '../common/TextInput';
 import TextArea from '../common/TextArea';
 import { useFormik } from 'formik';
-import { collection, addDoc, Timestamp } from '@firebase/firestore';
-import { db } from '../../config/firebase';
+import { collection, Timestamp, doc, where, query, getDocs, updateDoc } from '@firebase/firestore';
+import { auth, db } from '../../config/firebase';
 import { toast } from 'react-toastify';
 
 ReactModal.setAppElement('#react-modal-portal');
 
 const CreateNoteModal = ({ modalIsOpen, toggleModal }) => {
-
+    const user = auth.currentUser;
     const handleAddFunctionality = async (notesObj) => {
         try {
-            await addDoc(collection(db, 'notes'), {
-                ...notesObj,
-                createdAt: Timestamp.now(),
+            console.log(notesObj);
+            const collectionRef = collection(db, 'users');
+            const qry = query(collectionRef, where('id', '==', user.uid));
+            const res = await getDocs(qry);
+
+            res.forEach((document) => {
+                // doc.data() is never undefined for query doc snapshots
+                console.log(document.id, " => ", document.data());
+
+                const docRef = doc(db, 'users', document.id);
+                const notesData = document.data();
+
+                const { notes } = notesData;
+
+                const newNotesObj = {
+                    ...notesObj,
+                    createdAt: Timestamp.now(),
+                }
+
+                const notesArray = [...notes, newNotesObj];
+
+                updateDoc(docRef, {
+                    notes: notesArray
+                })
+                    .then((e) => {
+                        toggleModal();
+                        toast.success('Note Created Sucessfully');
+                        formik.resetForm();
+                    })
+                    .catch(error => {
+                        console.log(error)
+                    });
+
             });
-            toggleModal();
-            toast.success('Note Created Sucessfully');
-            formik.resetForm();
         } catch (error) {
             console.log(error);
             toast.error(error);
