@@ -27,8 +27,7 @@ const EditNoteModal = ({ editModalIsOpen, toggleModal, currentNoteObj }) => {
             toast.success('Note Updated Sucessfully');
             toggleModal();
         } catch (error) {
-            console.log(error);
-            toast.error(error);
+            toast.error(error.message);
         }
     }
 

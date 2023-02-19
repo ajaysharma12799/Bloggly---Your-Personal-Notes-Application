@@ -13,41 +13,39 @@ const Register = () => {
     const navigate = useNavigate();
 
     const formik = useFormik({
-        initialValues: {
-            displayName: '',
-            email: '',
-            password: '',
-        },
-        onSubmit: (value) => {
-            console.log(value);
-            registerWithEmailAndPassword(value);
-        }
+      initialValues: {
+        displayName: "",
+        email: "",
+        password: "",
+      },
+      onSubmit: (value) => {
+        registerWithEmailAndPassword(value);
+      },
     });
 
     const registerWithEmailAndPassword = async (userObj) => {
-        try {
-            const response = await createUserWithEmailAndPassword(auth, userObj.email, userObj.password);
-            const user = response.user;
+      try {
+        const response = await createUserWithEmailAndPassword(
+          auth,
+          userObj.email,
+          userObj.password
+        );
+        const user = response.user;
 
-            console.log(response);
-            console.log(user);
-
-            await addDoc(collection(db, 'users'), {
-                id: user.uid,
-                displayName: (user.displayName && user.displayName) || userObj.displayName,
-                email: user.email,
-                authProvider: 'local',
-                notes: [],
-            });
-            toast.success('User Registered Successfully');
-            formik.resetForm();
-            navigate('/dashboard');
-        } catch (error) {   
-            console.log(error.message);
-            console.log(error.code);
-            toast.error(error.message);
-        }
-    }
+        await addDoc(collection(db, "users"), {
+          id: user.uid,
+          displayName:
+            (user.displayName && user.displayName) || userObj.displayName,
+          email: user.email,
+          authProvider: "local",
+        });
+        toast.success("User Registered Successfully");
+        formik.resetForm();
+        navigate("/dashboard");
+      } catch (error) {
+        toast.error(error.message);
+      }
+    };
 
     return (
         <Box className='container mx-auto my-[5%] w-[90%] md:w-1/2'>

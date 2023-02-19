@@ -25,8 +25,7 @@ const CreateNoteModal = ({ modalIsOpen, toggleModal }) => {
             toast.success('Note Created Sucessfully');
             formik.resetForm();
         } catch (error) {
-            console.log(error);
-            toast.error(error);
+            toast.error(error.message);
         }
     }
 

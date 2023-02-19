@@ -12,30 +12,24 @@ import { toast } from 'react-toastify';
 const Login = () => {
     const navigate = useNavigate();
     const formik = useFormik({
-        initialValues: {
-            email: '',
-            password: ''
-        },
-        onSubmit: (value) => {
-            console.log(value);
-            loginUserWithEmailAndPassword(value);
-        }
+      initialValues: {
+        email: "",
+        password: "",
+      },
+      onSubmit: (value) => {
+        loginUserWithEmailAndPassword(value);
+      },
     });
 
     const loginUserWithEmailAndPassword = async (userObj) => {
-        try {
-            const userCrendentials = await signInWithEmailAndPassword(auth, userObj.email, userObj.password);
-            const user = userCrendentials.user;
-
-            console.log(userCrendentials);
-            console.log(user);
-            toast.success('LoggedIn Successfully')
-            navigate('/dashboard');
-        } catch (error) {
-            console.log(error);
-            toast.error(error.message);
-        }
-    }
+      try {
+        await signInWithEmailAndPassword(auth, userObj.email, userObj.password);
+        toast.success("LoggedIn Successfully");
+        navigate("/dashboard");
+      } catch (error) {
+        toast.error(error.message);
+      }
+    };
 
     return (
         <Box className='container mx-auto my-[5%] w-[90%] md:w-1/2'>

@@ -9,23 +9,23 @@ import { deleteDoc, doc } from '@firebase/firestore';
 const NoteCard = ({ note, toggleModal, setCurrentNoteObj }) => {
 
     const handleDelete = async (id) => {
-        try {
-            const docRef = doc(db, 'notes', id); // Generation Current Document Reference with Note ID
-            await deleteDoc(docRef);
-            toast.success('Note Deleted Successfully');
-        } catch (error) {
-            toast.error(error);
-        }
-    }
+      try {
+        const docRef = doc(db, "notes", id); // Generation Current Document Reference with Note ID
+        await deleteDoc(docRef);
+        toast.success("Note Deleted Successfully");
+      } catch (error) {
+        toast.error(error.message);
+      }
+    };
 
     const handleUpdate = async () => {
-        try {
-            setCurrentNoteObj(note);
-            toggleModal();
-        } catch (error) {
-            toast.error(error);
-        }
-    }
+      try {
+        setCurrentNoteObj(note);
+        toggleModal();
+      } catch (error) {
+        toast.error(error.message);
+      }
+    };
 
     return (
         <React.Fragment>
